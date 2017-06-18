@@ -1,6 +1,6 @@
 # gobpf
 
-[![Build Status](https://semaphoreci.com/api/v1/alban/gobpf-2/branches/master/badge.svg)](https://semaphoreci.com/alban/gobpf-2) [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](http://godoc.org/github.com/iovisor/gobpf)
+[![Build Status](https://semaphoreci.com/api/v1/alban/gobpf-2/branches/master/badge.svg)](https://semaphoreci.com/alban/gobpf-2) [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](http://godoc.org/github.com/alcideio/gobpf)
 
 This repository provides go bindings for the [bcc framework](https://github.com/iovisor/bcc)
 as well as low-level routines to load and use eBPF programs from .elf
@@ -16,12 +16,12 @@ undergoes change during development.
 eBPF requires a recent Linux kernel. A good feature list can be found here:
 https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
 
-### `github.com/iovisor/gobpf/bcc`
+### `github.com/alcideio/gobpf/bcc`
 
 Install the latest released version of [libbcc](https://github.com/iovisor/bcc/blob/master/INSTALL.md)
 (either by package or source).
 
-### `github.com/iovisor/gobpf/elf`
+### `github.com/alcideio/gobpf/elf`
 
 #### Building ELF object files
 
@@ -35,7 +35,7 @@ sections (`SEC("...")`). Currently supported are:
 * `socket...`
 * `tracepoint...`
 
-Map definitions must correspond to `bpf_map_def` from [elf.go](https://github.com/iovisor/gobpf/blob/master/elf/elf.go)
+Map definitions must correspond to `bpf_map_def` from [elf.go](https://github.com/alcideio/gobpf/blob/master/elf/elf.go)
 Otherwise you will encounter an error like `only one map with size 280 bytes allowed per section (check bpf_map_def)`.
 
 The [Cilium](https://github.com/cilium/cilium) BPF docs contain helpful info

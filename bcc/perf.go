@@ -20,7 +20,7 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/iovisor/gobpf/pkg/cpuonline"
+	"github.com/alcideio/gobpf/pkg/cpuonline"
 )
 
 /*
@@ -129,7 +129,7 @@ func InitPerfMap(table *Table, receiverChan chan []byte) (*PerfMap, error) {
 
 	for _, cpu := range cpus {
 		cpuC := C.int(cpu)
-		reader, err := C.bpf_open_perf_buffer((C.perf_reader_raw_cb)(unsafe.Pointer(C.callback_to_go)), unsafe.Pointer(uintptr(callbackDataIndex)), -1, cpuC, BPF_PERF_READER_PAGE_CNT)
+		reader, err := C.bpf_open_perf_buffer((C.perf_reader_raw_cb)(unsafe.Pointer(C.callback_to_go)), nil, unsafe.Pointer(uintptr(callbackDataIndex)), -1, cpuC, BPF_PERF_READER_PAGE_CNT)
 		if reader == nil {
 			return nil, fmt.Errorf("failed to open perf buffer: %v", err)
 		}

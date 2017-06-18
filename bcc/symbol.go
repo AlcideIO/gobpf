@@ -67,7 +67,7 @@ func resolveSymbolPath(module string, symname string, addr uint64, pid int) (str
 		pid = 0
 	}
 
-	res, err := C.bcc_resolve_symname(moduleCS, symnameCS, (C.uint64_t)(addr), C.int(pid), symbolC)
+	res, err := C.bcc_resolve_symname(moduleCS, symnameCS, (C.uint64_t)(addr), C.int(pid), nil, symbolC)
 	if res == 0 {
 		return C.GoString(symbolC.module), (uint64)(symbolC.offset), nil
 	}
@@ -91,7 +91,7 @@ func getUserSymbolsAndAddresses(module string) ([]*symbolAddress, error) {
 
 	moduleCS := C.CString(module)
 	defer C.free(unsafe.Pointer(moduleCS))
-	res := C.bcc_foreach_symbol(moduleCS, (C.SYM_CB)(unsafe.Pointer(C.foreach_symbol_callback)))
+	res := C.bcc_foreach_function_symbol(moduleCS, (C.SYM_CB)(unsafe.Pointer(C.foreach_symbol_callback)))
 	if res < 0 {
 		return nil, fmt.Errorf("unable to list symbols for %s", module)
 	}

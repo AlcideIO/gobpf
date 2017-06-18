@@ -21,9 +21,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/iovisor/gobpf/bcc"
-	"github.com/iovisor/gobpf/elf"
-	"github.com/iovisor/gobpf/pkg/bpffs"
+	"github.com/alcideio/gobpf/bcc"
+	"github.com/alcideio/gobpf/elf"
+	"github.com/alcideio/gobpf/pkg/bpffs"
 )
 
 var simple1 string = `
