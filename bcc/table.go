@@ -164,6 +164,98 @@ func (table *Table) Delete(keyStr string) error {
 	return nil
 }
 
+func (table *Table) GetRaw(_key []byte) ([]byte, bool) {
+	if _key == nil {
+		return nil, false
+	}
+
+	mod := table.module.p
+
+	key_size := int(C.bpf_table_key_size_id(mod, table.id))
+	if len(_key) != key_size {
+		return nil, false
+	}
+
+	var key []byte = make([]byte, len(_key))
+	copy(key[:], _key)
+	keyP := unsafe.Pointer(&key[0])
+
+	fd := C.bpf_table_fd_id(mod, table.id)
+	leaf_size := C.bpf_table_leaf_size_id(mod, table.id)
+	leaf := make([]byte, leaf_size)
+	leafP := unsafe.Pointer(&leaf[0])
+	r := C.bpf_lookup_elem(fd, keyP, leafP)
+	if r != 0 {
+		return nil, false
+	}
+	return leaf, true
+}
+
+func (table *Table) SetRaw(_key, _leaf []byte) error {
+	if table == nil || table.module.p == nil {
+		panic("table is nil")
+	}
+
+	if _key == nil {
+		return fmt.Errorf("Table.SetRaw: key is nil")
+	}
+
+	if _leaf == nil {
+		return fmt.Errorf("Table.SetRaw: leaf is nil")
+	}
+
+	mod := table.module.p
+	key_size := int(C.bpf_table_key_size_id(mod, table.id))
+	if len(_key) != key_size {
+		return fmt.Errorf("Table.SetRaw: key len(%v) != key_size(%v)", len(_key), key_size)
+	}
+
+	leaf_size := int(C.bpf_table_leaf_size_id(mod, table.id))
+	if len(_leaf) != leaf_size {
+		return fmt.Errorf("Table.SetRaw: leaf len(%v) != leaf_size(%v)", len(_leaf), leaf_size)
+	}
+
+	var key []byte = make([]byte, len(_key))
+	copy(key[:], _key)
+	keyP := unsafe.Pointer(&key[0])
+
+	var leaf []byte = make([]byte, len(_leaf))
+	copy(leaf[:], _leaf)
+	leafP := unsafe.Pointer(&leaf[0])
+
+	fd := C.bpf_table_fd_id(mod, table.id)
+	r, err := C.bpf_update_elem(fd, keyP, leafP, 0)
+	if r != 0 {
+		return fmt.Errorf("Table.SetRaw: unable to update element: %v", err)
+	}
+	return nil
+}
+
+// Delete a key.
+func (table *Table) DeleteRaw(_key []byte) error {
+	if _key == nil {
+		return fmt.Errorf("Table.SetRaw: key is nil")
+	}
+
+	mod := table.module.p
+	key_size := int(C.bpf_table_key_size_id(mod, table.id))
+	if len(_key) != key_size {
+		return fmt.Errorf("Table.SetRaw: key len(%v) != key_size(%v)", len(_key), key_size)
+	}
+
+	var key []byte = make([]byte, len(_key))
+	copy(key[:], _key)
+	keyP := unsafe.Pointer(&key[0])
+
+	fd := C.bpf_table_fd_id(table.module.p, table.id)
+	r, err := C.bpf_delete_elem(fd, keyP)
+	if r != 0 {
+		return fmt.Errorf("Table.DeleteRaw: unable to delete element: %v", err)
+	}
+	return nil
+}
+
+
 // Iter returns a receiver channel to iterate over all table entries.
 func (table *Table) Iter() <-chan Entry {
 	mod := table.module.p
