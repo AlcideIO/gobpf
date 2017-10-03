@@ -357,7 +357,7 @@ func (bpf *Module) TableIter() <-chan map[string]interface{} {
 
 func (bpf *Module) attachXDP(devName string, fd int) error {
 	devNameCS := C.CString(devName)
-	res, err := C.bpf_attach_xdp(devNameCS, C.int(fd))
+	res, err := C.bpf_attach_xdp(devNameCS, C.int(fd), 0)
 	defer C.free(unsafe.Pointer(devNameCS))
 
 	if res != 0 || err != nil {
