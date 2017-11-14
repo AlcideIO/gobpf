@@ -172,7 +172,7 @@ func (bpf *Module) load(name string, progType int) (int, error) {
 	}
 	logbuf := make([]byte, 65536)
 	logbufP := (*C.char)(unsafe.Pointer(&logbuf[0]))
-	fd, err := C.bpf_prog_load(uint32(progType), nameCS, start, size, license, version, logbufP, C.uint(len(logbuf)))
+	fd, err := C.bpf_prog_load(uint32(progType), start, size, license, version, logbufP, C.uint(len(logbuf)))
 	if fd < 0 {
 		msg := string(logbuf[:bytes.IndexByte(logbuf, 0)])
 		if len(msg) > 0 {
