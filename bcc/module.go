@@ -15,7 +15,7 @@
 package bcc
 
 import (
-	"bytes"
+	//"bytes"
 	"fmt"
 	"regexp"
 	"runtime"
@@ -161,7 +161,8 @@ func (bpf *Module) Load(name string, progType int) (int, error) {
 }
 
 func (bpf *Module) load(name string, progType int) (int, error) {
-	nameCS := C.CString(name)
+	return -1, fmt.Errorf("Module: libbcc bpf_prog_load temp hack need to build libbcc")
+	/*nameCS := C.CString(name)
 	defer C.free(unsafe.Pointer(nameCS))
 	start := (*C.struct_bpf_insn)(C.bpf_function_start(bpf.p, nameCS))
 	size := C.int(C.bpf_function_size(bpf.p, nameCS))
@@ -180,7 +181,7 @@ func (bpf *Module) load(name string, progType int) (int, error) {
 		}
 		return -1, fmt.Errorf("error loading BPF program: %v", err)
 	}
-	return int(fd), nil
+	return int(fd), nil*/
 }
 
 var kprobeRegexp = regexp.MustCompile("[+.]")
